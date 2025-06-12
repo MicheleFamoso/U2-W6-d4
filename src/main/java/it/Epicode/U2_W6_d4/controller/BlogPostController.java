@@ -6,8 +6,12 @@ import it.Epicode.U2_W6_d4.dto.BlogPostDto;
 import it.Epicode.U2_W6_d4.exception.NonTrovatoException;
 import it.Epicode.U2_W6_d4.model.BlogPost;
 import it.Epicode.U2_W6_d4.service.BlogPostService;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,8 +24,12 @@ public class BlogPostController {
 
     @PostMapping("/blogpost")
     @ResponseStatus(HttpStatus.CREATED)
-    public BlogPost saveBlogPost(@RequestBody BlogPostDto blogPostDto) throws NonTrovatoException {
+    public BlogPost saveBlogPost(@RequestBody @Validated BlogPostDto blogPostDto, BindingResult bindingResult) throws NonTrovatoException {
 
+        if (bindingResult.hasErrors()){
+            throw new ValidationException(bindingResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage).reduce("",(e, c)->e+c));
+        }
         return blogPostService.saveBlogPost(blogPostDto);
     }
 
@@ -36,7 +44,12 @@ public class BlogPostController {
         return blogPostService.getBlogPost(id);
     }
     @PutMapping("/blogpost/{id}")
-    public BlogPost updateBlogPost(@PathVariable int id,@RequestBody BlogPostDto blogPostDto) throws NonTrovatoException {
+    public BlogPost updateBlogPost(@PathVariable int id,@RequestBody @Validated BlogPostDto blogPostDto, BindingResult bindingResult) throws NonTrovatoException {
+        if (bindingResult.hasErrors()){
+            throw new ValidationException(bindingResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage).reduce("",(e, c)->e+c));
+        }
+
         return blogPostService.updateBlogPost(id, blogPostDto);
     }
 

@@ -21,4 +21,14 @@ public class PostExceptionHandler {
 
         return apiError;
     }
+
+    @ExceptionHandler(ValidationEx.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError validationExHandler(ValidationEx e){
+        ApiError apiError = new ApiError();
+        apiError.setMessage(e.getMessage());
+        apiError.setDataErrore(LocalDateTime.now());
+
+        return apiError;
+    }
 }
