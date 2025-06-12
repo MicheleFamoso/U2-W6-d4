@@ -79,8 +79,8 @@ public class AutoreService {
     public String patchAutore(int id, MultipartFile file) throws NonTrovatoException, IOException {
         Autore autore = getAutore(id);
 
-       String url = (String)cloudinary.uploader().upload(file.getBytes(),Collections.emptyMap().get("url"));
 
+        String url= (String)cloudinary.uploader().upload(file.getBytes(), Collections.emptyMap()).get("url");
        autore.setAvatar(url);
        autoreRepository.save(autore);
        return url;
